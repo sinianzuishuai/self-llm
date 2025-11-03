@@ -46,8 +46,17 @@ pip install qwen-vl-utils
 
 ```python
 # model_download.py
-from modelscope import snapshot_download  #中国的 "Hugging Face"
+from modelscope import snapshot_download  #中国的 "Hugging Face" snapshot_download 是 ModelScope 库中一个专门用于下载完整模型文件的函数
 model_dir = snapshot_download('Qwen/Qwen3-VL-4B-Instruct', cache_dir='/root/autodl-fs', revision='master')
+#大致目录结构
+#/root/autodl-fs/
+#└── Qwen
+#    └── Qwen3-VL-4B-Instruct
+#        ├── config.json
+#        ├── model.safetensors
+#        ├── tokenizer.json
+#        ├── vision_config.json
+#        └── ...其他模型文件
 ```
 
 > 注意：请记得修改 `cache_dir` 为你自己的模型下载路径。建议使用 `/root/autodl-fs` 目录，这是持久化存储目录，重启机器后数据不会丢失。Qwen3-VL-4B-Instruct模型实际大小约为**9.2GB**（包含所有配置文件和权重文件），下载时间根据网络速度而定。
