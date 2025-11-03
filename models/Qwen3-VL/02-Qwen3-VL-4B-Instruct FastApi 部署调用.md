@@ -46,7 +46,7 @@ pip install qwen-vl-utils
 
 ```python
 # model_download.py
-from modelscope import snapshot_download
+from modelscope import snapshot_download  #中国的 "Hugging Face"
 model_dir = snapshot_download('Qwen/Qwen3-VL-4B-Instruct', cache_dir='/root/autodl-fs', revision='master')
 ```
 
