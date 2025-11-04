@@ -83,8 +83,12 @@ from pydantic import BaseModel
 from typing import List, Dict, Any, Optional
 
 # 设置环境变量
+#Hugging Face 的 tokenizer 默认使用多线程并行处理文本，以加速 tokenization。在某些情况下，这种并行处理会与 PyTorch 的多线程产生冲突
+#导致：死锁、内存使用过高、性能下降、设置为 "false" 强制 tokenizer 使用单线程处理
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
 os.environ["CUDA_VISIBLE_DEVICES"] = "0"
+
+#设置PyTorch的CPU线程数，限制 PyTorch 在 CPU 上执行操作时使用的线程数量参数：8 表示使用 8 个 CPU 线程
 torch.set_num_threads(8)
 
 # 创建FastAPI应用
