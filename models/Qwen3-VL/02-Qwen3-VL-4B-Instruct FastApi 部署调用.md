@@ -100,9 +100,10 @@ model_name_or_path = '/root/autodl-fs/Qwen/Qwen3-VL-4B-Instruct'
 # 初始化模型和处理器
 model = Qwen3VLForConditionalGeneration.from_pretrained(
     model_name_or_path,
-    torch_dtype=torch.bfloat16,
-    device_map="auto",
-    trust_remote_code=True
+    torch_dtype=torch.bfloat16,  #torch_dtype代表PyTorch的数据类型。torch.bfloat16是一种16位的浮点数格式。
+    device_map="auto",  #它会自动分析你当前可用的硬件资源（如GPU显存大小），并尝试将模型的各个部分均匀地、智能地分配到可用的设备上。
+
+    trust_remote_code=True  #对于一些新兴的、自定义结构复杂的模型（如Qwen、ChatGLM等），它们的模型定义代码可能还没有被完全集成到官方的 transformers 库中。这个参数告诉程序我相                              #信这个模型自带的代码是安全的，请允许执行它。
 )
 
 processor = AutoProcessor.from_pretrained(
