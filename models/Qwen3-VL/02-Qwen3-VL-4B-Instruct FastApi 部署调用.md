@@ -105,18 +105,20 @@ model = Qwen3VLForConditionalGeneration.from_pretrained(
     trust_remote_code=True  #模型定义代码可能还没有被完全集成到官方的 transformers 库中。这个参数告诉程序我相信这个模型自带的代码是安全的，请允许执行它。
 )
 
-#processor处理器是一个 多功能工具包，专门负责在将原始输入交给模型之前，对其进行预处理，并在模型输出后，对其进行后处理。
+#processor处理器是一个多功能工具包，专门负责在将原始输入交给模型之前，对其进行预处理，并在模型输出后，对其进行后处理。
 processor = AutoProcessor.from_pretrained(
     model_name_or_path,
     trust_remote_code=True
 )
 
 # 请求模型
-class ChatRequest(BaseModel):
-    messages: List[Dict[str, Any]]
-    max_tokens: Optional[int] = 512
-    temperature: Optional[float] = 0.7
-    top_p: Optional[float] = 0.9
+class ChatRequest(BaseModel):        # 类继承自BaseModel时，获得Pydantic库的能力，数据验证、类型转换、序列化/反序列化、生成JSON Schema
+    messages: List[Dict[str, Any]]   # messages列表用于表示整个对话的历史和上下文。列表中的每一个字典都代表对话中的一条消息。
+                                     #  {"role": "system", "content": "你是一个专业的翻译助手，擅长中英互译。"}, 每个消息字典通常包含两个固定的键。
+
+    max_tokens: Optional[int] = 512      # 用于控制模型生成内容的最大长度。
+    temperature: Optional[float] = 0.7   
+    top_p: Optional[float] = 0.9         # 例如top_p=0.9意味着模型将从概率最高的令牌开始挑选，直到累计概率达到90%，然后只在这个小集合中进行采样。
 
 # 响应模型
 class ChatResponse(BaseModel):
