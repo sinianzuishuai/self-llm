@@ -115,7 +115,6 @@ processor = AutoProcessor.from_pretrained(
 class ChatRequest(BaseModel):        # 类继承自BaseModel时，获得Pydantic库的能力，数据验证、类型转换、序列化/反序列化、生成JSON Schema
     messages: List[Dict[str, Any]]   # messages列表用于表示整个对话的历史和上下文。列表中的每一个字典都代表对话中的一条消息。
                                      #  {"role": "system", "content": "你是一个专业的翻译助手，擅长中英互译。"}, 每个消息字典通常包含两个固定的键。
-
     max_tokens: Optional[int] = 512      # 用于控制模型生成内容的最大长度。
     temperature: Optional[float] = 0.7   
     top_p: Optional[float] = 0.9         # 例如top_p=0.9意味着模型将从概率最高的令牌开始挑选，直到累计概率达到90%，然后只在这个小集合中进行采样。
@@ -124,11 +123,13 @@ class ChatRequest(BaseModel):        # 类继承自BaseModel时，获得Pydantic
 class ChatResponse(BaseModel):
     response: str
     model: str = "Qwen3-VL-4B-Instruct"
-    usage: Dict[str, int]
+    usage: Dict[str, int]                # 用于报告本次对话的资源消耗统计，例如消耗的token数。
 
 @app.get("/")
 async def root():
     return {"message": "Qwen3-VL-4B-Instruct API Server is running!"}
+# 这是一个装饰器，app是FastAPI应用实例。 .get()是一个方法，它告诉 FastAPI 这个函数是用来处理 HTTP GET请求的。("/")：是URL路径。"/" 代表网站的根目录。
+
 
 @app.get("/health")
 async def health_check():
@@ -139,6 +140,10 @@ async def health_check():
         "torch_version": torch.__version__,
         "cuda_available": torch.cuda.is_available(),
         "gpu_memory": f"{torch.cuda.get_device_properties(0).total_memory / 1024**3:.1f}GB" if torch.cuda.is_available() else "N/A"
+        # gpu_info = torch.cuda.get_device_properties(0)获取第一个GPU的详细信息
+        # memory_in_bytes = gpu_info.total_memory 获取GPU的总显存大小（单位：字节）
+        # 1GB = 1024MB，1MB = 1024KB，1KB = 1024字节
+        # f"{...:.1f}GB" 格式化为字符串
     }
 
 @app.post("/v1/chat/completions", response_model=ChatResponse)
